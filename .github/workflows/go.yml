@@ -4,6 +4,9 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
+# This workflow will build a golang project for multiple platforms
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
 name: Build and Release
 
 on:
@@ -28,11 +31,16 @@ jobs:
     - name: Install dependencies
       run: go mod download
 
-    - name: Build Binary
-      run: go build -v -o extdrm ./extdrm
+    - name: Build Linux Binary
+      run: |
+        GOOS=linux GOARCH=amd64 go build -v -o build/extdrm-linux ./extdrm
 
-    - name: Upload Build Artifact
+    - name: Build Windows Binary
+      run: |
+        GOOS=windows GOARCH=amd64 go build -v -o build/extdrm-windows.exe ./extdrm
+
+    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: extdrm-binary
-        path: extdrm
+        name: extdrm-binaries
+        path: build/
